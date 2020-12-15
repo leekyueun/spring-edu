@@ -2,6 +2,7 @@ package com.kyueun.apis.route;
 
 import com.kyueun.apis.model.User;
 import com.kyueun.apis.service.UserService;
+import com.kyueun.apis.vo.UserRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,18 @@ public class UserRoute {
         return this.userService.find(Integer.parseInt(userId));
     }
 
+    @PostMapping("")
+    public void createUser(UserRegisterVO user) {
+        this.userService.createUser(user);
+    }
+
     @GetMapping("/initialize")
     public void initializeUsers() {
         this.userService.initializeUsers();
+    }
+
+    @DeleteMapping("/{user_id}")
+    public void deleteUser(@PathVariable(value = "user_id") String userId) {
+        this.userService.deleteUser(Integer.parseInt(userId));
     }
 }
