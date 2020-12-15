@@ -30,10 +30,11 @@ public class Sale {
     private int amount;
 
     @Builder
-    public Sale(int saleId, int userId, int productId, int listPrice, int amount) {
+    public Sale(int saleId, int userId, int productId, int paidPrice, int listPrice, int amount) {
         this.saleId = saleId;
         this.userId = userId;
         this.productId = productId;
+        this.paidPrice = paidPrice;
         this.listPrice = listPrice;
         this.amount = amount;
     }
@@ -41,8 +42,8 @@ public class Sale {
     @Override
     public String toString() {
         return String.format(
-                "Product[saleId=%d, userId=%d, productId=%d, listPrice=%d, amount=%d]",
-                this.saleId, this.userId, this.productId, this.listPrice, this.amount
+                "Sale[saleId=%d, userId=%d, productId=%d, paidPrice=%d, listPrice=%d, amount=%d]",
+                this.saleId, this.userId, this.productId, this.paidPrice, this.listPrice, this.amount
         );
     }
 }
