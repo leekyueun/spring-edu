@@ -2,6 +2,7 @@ package com.kyueun.apis.service;
 
 import com.kyueun.apis.model.User;
 import com.kyueun.apis.repository.UserRepository;
+import com.kyueun.apis.vo.UserRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -49,5 +50,19 @@ public class UserService {
         this.userRepository.save(user2);
         this.userRepository.save(user3);
         this.userRepository.flush();
+    }
+
+    public void createUser(UserRegisterVO userRegisterVO) {
+        User createUser = User.builder()
+                .name(userRegisterVO.getName())
+                .phone(userRegisterVO.getPhone())
+                .email(userRegisterVO.getEmail())
+                .build();
+        this.userRepository.save(createUser);
+        this.userRepository.flush();
+    }
+
+    public void deleteUser(int userId) {
+        this.userRepository.deleteById(userId);
     }
 }
