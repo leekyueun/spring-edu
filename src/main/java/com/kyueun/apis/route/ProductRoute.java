@@ -41,7 +41,7 @@ public class ProductRoute {
     }
 
     @PostMapping
-    public void createProduct(ProductRegisterVO productRegisterVO) {
-        this.productService.createProduct(productRegisterVO);
+    public int createProduct(ProductRegisterVO productRegisterVO) {
+        return this.productService.createProduct(productRegisterVO);
     }
 }

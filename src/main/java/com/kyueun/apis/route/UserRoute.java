@@ -31,8 +31,8 @@ public class UserRoute {
     }
 
     @PostMapping("")
-    public void createUser(UserRegisterVO user) {
-        this.userService.createUser(user);
+    public int createUser(UserRegisterVO user) {
+        return this.userService.createUser(user);
     }
 
     @GetMapping("/initialize")
