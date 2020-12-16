@@ -3,6 +3,7 @@ package com.kyueun.apis.service;
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.repository.ProductRepository;
 import com.kyueun.apis.repository.UserRepository;
+import com.kyueun.apis.vo.ProductRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -49,5 +50,21 @@ public class ProductService {
         this.productRepository.save(product2);
         this.productRepository.save(product3);
         this.productRepository.flush();
+    }
+
+    public void createProduct(ProductRegisterVO productRegisterVO) {
+        Product createProduct = Product.builder()
+                .name(productRegisterVO.getName())
+                .description(productRegisterVO.getDescription())
+                .listPrice(productRegisterVO.getListPrice())
+                .price(productRegisterVO.getPrice())
+                .build();
+
+        this.productRepository.save(createProduct);
+        this.productRepository.flush();
+    }
+
+    public void deleteProduct(int productId) {
+        this.productRepository.deleteById(productId);
     }
 }
