@@ -1,10 +1,13 @@
 package com.kyueun.apis.model;
 
+import com.kyueun.apis.datamodels.SaleStatusEnum;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 
 @Getter
 @NoArgsConstructor
@@ -28,6 +31,9 @@ public class Sale {
 
     @Column(nullable = false)
     private int amount;
+
+    @Enumerated(EnumType.STRING)
+    private SaleStatusEnum status = SaleStatusEnum.NON_PAID;
 
     @Builder
     public Sale(int saleId, int userId, int productId, int paidPrice, int listPrice, int amount) {
