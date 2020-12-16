@@ -19,6 +19,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    public List<Product> findAll() {
+        return this.productRepository.findAll();
+    }
+
     public Product find(int productId) throws Exception {
         Optional<Product> searchedProduct = this.productRepository.findById(productId);
         return searchedProduct.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다."));
