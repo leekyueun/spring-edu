@@ -1,8 +1,12 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.SaleStatusEnum;
+import com.kyueun.apis.model.Product;
 import com.kyueun.apis.model.Sale;
+import com.kyueun.apis.model.User;
+import com.kyueun.apis.repository.ProductRepository;
 import com.kyueun.apis.repository.SaleRepository;
+import com.kyueun.apis.repository.UserRepository;
 import com.kyueun.apis.vo.SalePurcheseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +16,8 @@ import java.util.Optional;
 @Controller
 public class SaleService {
     private final SaleRepository saleRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     public Sale find(int saleId) throws Exception {
         Optional<Sale> searchedSale = this.saleRepository.findById(saleId);
@@ -19,11 +25,26 @@ public class SaleService {
     }
 
     @Autowired
-    public SaleService(SaleRepository saleRepository) {
+    public SaleService(SaleRepository saleRepository, UserRepository userRepository, ProductRepository productRepository) {
         this.saleRepository = saleRepository;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
-    public int createSale(SalePurcheseVO salePurcheseVO) {
+    public int createSale(SalePurcheseVO salePurcheseVO) throws Exception {
+        Optional<Product> product = this.productRepository.findById(salePurcheseVO.getUserId());
+        Optional<User> user = this.userRepository.findById(salePurcheseVO.getUserId());
+
+        Product findedProduct = product.orElseThrow(() -> new Exception("해당 상품 ID가 존재하지 않습니다."));
+        user.orElseThrow(() -> new Exception("해당 유저 ID가 존재하지 않습니다."));
+
+        if (salePurcheseVO.getListPrice() != findedProduct.getListPrice() * salePurcheseVO.getAmount()) {
+            throw new Exception("정가가 상품정보에 등록된 가격과 다릅니다");
+        }
+        if (salePurcheseVO.getPaidPrice() != findedProduct.getPrice() * salePurcheseVO.getAmount()) {
+            throw new Exception("실제 구매 금액이 상품정보에 등록된 가격과 다릅니다");
+        }
+
         Sale createSale = Sale.builder()
                 .userId(salePurcheseVO.getUserId())
                 .productId(salePurcheseVO.getProductId())
@@ -47,8 +68,13 @@ public class SaleService {
         this.saleRepository.flush();
     }
 
-    public void refund(int orderId) {
+    public void refund(int saleId) throws Exception {
+        Optional<Sale> purchaseSale = this.saleRepository.findById(saleId);
+        Sale sale = purchaseSale.orElseThrow(() -> new Exception("결제 취소로 변경하는 도중에 문제가 생겼습니다."));
 
+        sale.setStatus(SaleStatusEnum.REFUNDED);
+        this.saleRepository.save(sale);
+        this.saleRepository.flush();
     }
 
     public void initializeSales() {

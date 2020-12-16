@@ -32,4 +32,9 @@ public class SaleRoute {
         int saleId = this.saleService.createSale(salePurcheseVO);
         this.saleService.purchase(saleId);
     }
+
+    @PostMapping("/{sale_id}/refund")
+    public void refund(@PathVariable(value = "sale_id") String saleId) throws Exception {
+        this.saleService.refund(Integer.parseInt(saleId));
+    }
 }
