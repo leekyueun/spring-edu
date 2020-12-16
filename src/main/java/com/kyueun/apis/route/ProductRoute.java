@@ -2,6 +2,7 @@ package com.kyueun.apis.route;
 
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.service.ProductService;
+import com.kyueun.apis.vo.ProductRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,5 +25,15 @@ public class ProductRoute {
     @GetMapping("/initialize")
     public void initializeProducts() {
         this.productService.initializeProducts();
+    }
+
+    @DeleteMapping("/{product_id}")
+    public void deleteUser(@PathVariable(value = "user_id") String productId) {
+        this.productService.deleteProduct(Integer.parseInt(productId));
+    }
+
+    @PostMapping
+    public void createProduct(ProductRegisterVO productRegisterVO) {
+        this.productService.createProduct(productRegisterVO);
     }
 }
