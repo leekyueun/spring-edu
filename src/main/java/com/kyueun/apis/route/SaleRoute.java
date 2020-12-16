@@ -2,6 +2,7 @@ package com.kyueun.apis.route;
 
 import com.kyueun.apis.model.Sale;
 import com.kyueun.apis.service.SaleService;
+import com.kyueun.apis.vo.SalePurcheseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,5 +25,11 @@ public class SaleRoute {
     @GetMapping("/initialize")
     public void initializeSales() {
         this.saleService.initializeSales();
+    }
+
+    @PostMapping("/purchase")
+    public void purchase(SalePurcheseVO salePurcheseVO) throws  Exception {
+        int saleId = this.saleService.createSale(salePurcheseVO);
+        this.saleService.purchase(saleId);
     }
 }
