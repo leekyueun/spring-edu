@@ -41,7 +41,13 @@ public class ProductRoute {
     }
 
     @PostMapping
-    public void createProduct(ProductRegisterVO productRegisterVO) {
-        this.productService.createProduct(productRegisterVO);
+    public int createProduct(ProductRegisterVO productRegisterVO) {
+        return this.productService.createProduct(productRegisterVO);
+    }
+
+    @GetMapping("/category/{category_name}")
+    @ResponseBody
+    public List<Product> getProductsBycategory(@PathVariable(value = "category_name") String category_name) {
+        return this.productService.productsByCategory(category_name);
     }
 }
