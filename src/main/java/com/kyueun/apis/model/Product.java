@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +26,10 @@ public class Product {
 
     @Column
     private int price;
+
+    @OneToMany
+    @JoinColumn(name="review_key", referencedColumnName = "product_id")
+    private Collection<Review> reviews;
 
     @Builder
     public Product(String name, String description, int listPrice, int price) {
