@@ -66,6 +66,7 @@ public class ProductService {
                 .listPrice(productRegisterVO.getListPrice())
                 .price(productRegisterVO.getPrice())
                 .category(productRegisterVO.getCategory())
+                .imageURL(productRegisterVO.getImageURL())
                 .build();
 
         this.productRepository.save(createProduct);
