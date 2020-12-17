@@ -1,6 +1,8 @@
 package com.kyueun.apis.service;
 
+import com.kyueun.apis.datamodels.SaleGroupByUserId;
 import com.kyueun.apis.datamodels.SaleStatusEnum;
+import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.model.Sale;
 import com.kyueun.apis.model.User;
@@ -11,6 +13,7 @@ import com.kyueun.apis.vo.SalePurcheseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -103,5 +106,14 @@ public class SaleService {
         this.saleRepository.save(sale2);
         this.saleRepository.save(sale3);
         this.saleRepository.flush();
+    }
+
+    public List<Sale> getSalesByUserId(int userId) {
+        return this.saleRepository.findByUserId(userId);
+    }
+
+    public UserTotalPaidPrice getTotalPaidPriceByUserId(int userId) {
+        SaleGroupByUserId groupData = this.saleRepository.PurchaseAmountGroupByUserId(userId);
+        return new UserTotalPaidPrice(groupData);
     }
 }

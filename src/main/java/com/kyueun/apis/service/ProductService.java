@@ -34,6 +34,7 @@ public class ProductService {
                 .description("여러분들이 쓰고 계신겁니다")
                 .listPrice(1200000)
                 .price(1000000)
+                .category("전자기기")
                 .build();
 
         Product product2 = Product.builder()
@@ -41,6 +42,7 @@ public class ProductService {
                 .description("핸드폰")
                 .listPrice(1240000)
                 .price(1110000)
+                .category("전자기기")
                 .build();
 
         Product product3 = Product.builder()
@@ -48,6 +50,7 @@ public class ProductService {
                 .description("달라진 것은 하나, 전부입니다")
                 .listPrice(230000)
                 .price(210000)
+                .category("이어폰")
                 .build();
 
         this.productRepository.save(product1);
@@ -62,6 +65,7 @@ public class ProductService {
                 .description(productRegisterVO.getDescription())
                 .listPrice(productRegisterVO.getListPrice())
                 .price(productRegisterVO.getPrice())
+                .category(productRegisterVO.getCategory())
                 .build();
 
         this.productRepository.save(createProduct);
@@ -72,5 +76,9 @@ public class ProductService {
 
     public void deleteProduct(int productId) {
         this.productRepository.deleteById(productId);
+    }
+
+    public List<Product> productsByCategory(String category) {
+        return this.productRepository.findByCategory(category);
     }
 }

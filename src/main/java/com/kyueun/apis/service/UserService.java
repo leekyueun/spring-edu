@@ -1,6 +1,11 @@
 package com.kyueun.apis.service;
 
+import com.kyueun.apis.datamodels.SaleGroupByUserId;
+import com.kyueun.apis.datamodels.SaleStatusEnum;
+import com.kyueun.apis.datamodels.UserGradeEnum;
+import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.User;
+import com.kyueun.apis.repository.SaleRepository;
 import com.kyueun.apis.repository.UserRepository;
 import com.kyueun.apis.vo.UserRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +17,12 @@ import java.util.Optional;
 @Controller
 public class UserService {
     private final UserRepository userRepository;
+    private final SaleRepository saleRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, SaleRepository saleRepository) {
         this.userRepository = userRepository;
+        this.saleRepository = saleRepository;
     }
 
     public User find(int userId) throws Exception {
@@ -66,5 +73,26 @@ public class UserService {
 
     public void deleteUser(int userId) {
         this.userRepository.deleteById(userId);
+    }
+
+    public UserGradeEnum getUserGrade(int userId) {
+        SaleGroupByUserId groupData = this.saleRepository.PurchaseAmountGroupByUserId(userId);
+        UserTotalPaidPrice userTotalPaidPrice = new UserTotalPaidPrice(groupData);
+
+        if(userTotalPaidPrice.getTotalPaidPrice() < 100000) {
+            return UserGradeEnum.FirstGrade;
+        }
+        else if (userTotalPaidPrice.getTotalPaidPrice() < 1000000) {
+            return UserGradeEnum.SecondGrade;
+        }
+        else if (userTotalPaidPrice.getTotalPaidPrice() < 3000000) {
+            return UserGradeEnum.ThirdGrade;
+        }
+        else if (userTotalPaidPrice.getTotalPaidPrice() < 10000000) {
+            return UserGradeEnum.FourthGrade;
+        }
+        else {
+            return UserGradeEnum.TopTier;
+        }
     }
 }

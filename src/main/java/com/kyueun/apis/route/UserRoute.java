@@ -1,6 +1,11 @@
 package com.kyueun.apis.route;
 
+import com.kyueun.apis.datamodels.SaleGroupByUserId;
+import com.kyueun.apis.datamodels.UserGradeEnum;
+import com.kyueun.apis.datamodels.UserTotalPaidPrice;
+import com.kyueun.apis.model.Sale;
 import com.kyueun.apis.model.User;
+import com.kyueun.apis.service.SaleService;
 import com.kyueun.apis.service.UserService;
 import com.kyueun.apis.vo.UserRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +17,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserRoute {
     private final UserService userService;
+    private final SaleService saleService;
 
     @Autowired
-    public UserRoute(UserService userService) {
+    public UserRoute(UserService userService, SaleService saleService) {
         this.userService = userService;
+        this.saleService = saleService;
     }
 
     @GetMapping("")
@@ -44,4 +51,20 @@ public class UserRoute {
     public void deleteUser(@PathVariable(value = "user_id") String userId) {
         this.userService.deleteUser(Integer.parseInt(userId));
     }
+
+    @GetMapping("/user/{user_id}/purchase_list")
+    public List<Sale> getuserPurchaseList(@PathVariable(value = "user_id") String userId) {
+        return this.saleService.getSalesByUserId(Integer.parseInt(userId));
+    }
+
+    @GetMapping("/{user_id}/purchase_amount")
+    public UserTotalPaidPrice getuserPurchaseAmount(@PathVariable(value = "user_id") String userId) {
+        return this.saleService.getTotalPaidPriceByUserId(Integer.parseInt(userId));
+    }
+
+    @GetMapping("/{user_id}/grade")
+    public UserGradeEnum getUserGrade(@PathVariable(value = "user_id") String userId) {
+        return this.userService.getUserGrade(Integer.parseInt(userId));
+    }
+
 }
