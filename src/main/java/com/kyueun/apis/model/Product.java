@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
@@ -28,8 +29,8 @@ public class Product {
     private int price;
 
     @OneToMany
-    @JoinColumn(name="review_key", referencedColumnName = "product_id")
-    private Collection<Review> reviews;
+    @JoinColumn(name="product_id")
+    private Collection<Review> reviews = new ArrayList<>();
 
     @Builder
     public Product(String name, String description, int listPrice, int price) {
