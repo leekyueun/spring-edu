@@ -3,12 +3,8 @@ package com.kyueun.apis.service;
 import com.kyueun.apis.datamodels.SaleGroupByUserId;
 import com.kyueun.apis.datamodels.SaleStatusEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
-import com.kyueun.apis.model.Product;
-import com.kyueun.apis.model.Sale;
-import com.kyueun.apis.model.User;
-import com.kyueun.apis.repository.ProductRepository;
-import com.kyueun.apis.repository.SaleRepository;
-import com.kyueun.apis.repository.UserRepository;
+import com.kyueun.apis.model.*;
+import com.kyueun.apis.repository.*;
 import com.kyueun.apis.vo.SalePurcheseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,59 +17,91 @@ public class SaleService {
     private final SaleRepository saleRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
-    public Sale find(int saleId) throws Exception {
-        Optional<Sale> searchedSale = this.saleRepository.findById(saleId);
-        return searchedSale.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다."));
-    }
+    private final CouponRepository couponRepository;
+    private final IssuedCouponRepository issuedCouponRepository;
 
     @Autowired
-    public SaleService(SaleRepository saleRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public SaleService(SaleRepository saleRepository,
+                       UserRepository userRepository,
+                       ProductRepository productRepository,
+                       CouponRepository couponRepository,
+                       IssuedCouponRepository issuedCouponRepository) {
         this.saleRepository = saleRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.couponRepository = couponRepository;
+        this.issuedCouponRepository = issuedCouponRepository;
     }
 
-    public int createSale(SalePurcheseVO salePurcheseVO) throws Exception {
-        Optional<Product> product = this.productRepository.findById(salePurcheseVO.getUserId());
-        Optional<User> user = this.userRepository.findById(salePurcheseVO.getUserId());
+    public Sale find(int saleId) throws Exception {
+        Optional<Sale> searchedSale = this.saleRepository.findById(saleId);
+        return searchedSale.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다"));
+    }
 
-        Product findedProduct = product.orElseThrow(() -> new Exception("해당 상품 ID가 존재하지 않습니다."));
-        user.orElseThrow(() -> new Exception("해당 유저 ID가 존재하지 않습니다."));
+    private int getDiscountAmount(int originAmount, int discountAmount, int discountPercentage) {
+        if (discountAmount != 0) {
+            return discountAmount;
+        }
+        else if (discountPercentage != 0) {
+            return (int)Math.floor(originAmount * (discountPercentage / 100));
+        }
+        return 0;
+    }
 
-        if (salePurcheseVO.getListPrice() != findedProduct.getListPrice() * salePurcheseVO.getAmount()) {
+    public int createSale(SalePurcheseVO salePurchaseVO) throws Exception{
+        Optional<Product> product = this.productRepository.findById(salePurchaseVO.getProductId());
+        Optional<User> user = this.userRepository.findById(salePurchaseVO.getUserId());
+
+        Product findedProduct = product.orElseThrow(() -> new Exception("해당 상품 ID 가 존재하지 않습니다"));
+        user.orElseThrow(() -> new Exception("해당 유저 ID 가 존재하지 않습니다"));
+
+        if (salePurchaseVO.getListPrice() != findedProduct.getListPrice() * salePurchaseVO.getAmount()) {
             throw new Exception("정가가 상품정보에 등록된 가격과 다릅니다");
         }
-        if (salePurcheseVO.getPaidPrice() != findedProduct.getPrice() * salePurcheseVO.getAmount()) {
+        if (salePurchaseVO.getPaidPrice() != findedProduct.getPrice() * salePurchaseVO.getAmount()) {
             throw new Exception("실제 구매 금액이 상품정보에 등록된 가격과 다릅니다");
         }
 
-        Sale createSale = Sale.builder()
-                .userId(salePurcheseVO.getUserId())
-                .productId(salePurcheseVO.getProductId())
-                .paidPrice(salePurcheseVO.getPaidPrice())
-                .listPrice(salePurcheseVO.getListPrice())
-                .amount(salePurcheseVO.getAmount())
-                .build();
+        int issuedCouponId = salePurchaseVO.getIssuedCouponId();
+        IssuedCoupon issuedCoupon = this.issuedCouponRepository.findById(issuedCouponId)
+                .orElseThrow(() -> new Exception("해당 발급된 쿠폰이 존재하지 않습니다."));
 
-        this.saleRepository.save(createSale);
+        Coupon coupon = this.couponRepository.findById(issuedCoupon.getCouponId())
+                .orElseThrow(() -> new Exception("해당 쿠폰이 존재하지 않습니다."));
+
+        int discountAmount = this.getDiscountAmount(salePurchaseVO.getPaidPrice(),
+                coupon.getDiscountPrice(), coupon.getDiscountPercentage());
+
+        Sale createdSale = Sale.builder()
+                .userId(salePurchaseVO.getUserId())
+                .productId(salePurchaseVO.getProductId())
+                .paidPrice(salePurchaseVO.getPaidPrice())
+                .listPrice(salePurchaseVO.getListPrice())
+                .amount(salePurchaseVO.getAmount()).build();
+
+        this.saleRepository.save(createdSale);
+
+        issuedCoupon.setUsed(true);
+        this.issuedCouponRepository.save(issuedCoupon);
+
         this.saleRepository.flush();
+        this.issuedCouponRepository.flush();
 
-        return createSale.getSaleId();
+        return createdSale.getSaleId();
     }
 
     public void purchase(int saleId) throws Exception {
-        Optional<Sale> purchaseSale = this.saleRepository.findById(saleId);
-        Sale sale = purchaseSale.orElseThrow(() -> new Exception("결제 완료로 변경하는 도중에 문제가 생겼습니다."));
+        Optional<Sale> targetSale = this.saleRepository.findById(saleId);
+        Sale sale = targetSale.orElseThrow(() -> new Exception("결제 완료로 변경하는 도중에 문제가 생겼습니다"));
 
         sale.setStatus(SaleStatusEnum.PAID);
         this.saleRepository.save(sale);
         this.saleRepository.flush();
     }
 
-    public void refund(int saleId) throws Exception {
-        Optional<Sale> purchaseSale = this.saleRepository.findById(saleId);
-        Sale sale = purchaseSale.orElseThrow(() -> new Exception("결제 취소로 변경하는 도중에 문제가 생겼습니다."));
+    public void refund(int saleId) throws Exception{
+        Optional<Sale> targetSale = this.saleRepository.findById(saleId);
+        Sale sale = targetSale.orElseThrow(() -> new Exception("결제 취소로 변경하는 도중에 문제가 생겼습니다"));
 
         sale.setStatus(SaleStatusEnum.REFUNDED);
         this.saleRepository.save(sale);
@@ -86,22 +114,22 @@ public class SaleService {
                 .productId(1)
                 .listPrice(1200000)
                 .paidPrice(1000000)
-                .amount(1)
-                .build();
+                .amount(1).build();
+
         Sale sale2 = Sale.builder()
-                .userId(1)
-                .productId(1)
-                .listPrice(1230000 * 2)
+                .userId(2)
+                .productId(2)
+                .listPrice(1240000 * 2)
                 .paidPrice(1110000 * 2)
-                .amount(2)
-                .build();
+                .amount(2).build();
+
         Sale sale3 = Sale.builder()
                 .userId(3)
                 .productId(3)
                 .listPrice(230000 * 3)
                 .paidPrice(210000 * 3)
-                .amount(3)
-                .build();
+                .amount(3).build();
+
         this.saleRepository.save(sale1);
         this.saleRepository.save(sale2);
         this.saleRepository.save(sale3);

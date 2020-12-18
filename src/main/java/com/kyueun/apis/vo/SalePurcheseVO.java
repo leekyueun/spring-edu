@@ -1,5 +1,6 @@
 package com.kyueun.apis.vo;
 
+import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,9 @@ public class SalePurcheseVO {
     int paidPrice;
     int listPrice;
     int amount;
+
+    @Nullable
+    int issuedCouponId;
 
     @Override
     public String toString() {
