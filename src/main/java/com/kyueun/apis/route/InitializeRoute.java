@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/initialize")
+@RequestMapping
 public class InitializeRoute {
     private final ProductService productService;
     private final ReviewService reviewService;
@@ -25,7 +25,7 @@ public class InitializeRoute {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/initialize")
     public void initialize() {
         this.productService.initializeProducts();
         this.userService.initializeUsers();
