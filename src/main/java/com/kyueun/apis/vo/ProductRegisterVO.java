@@ -13,13 +13,12 @@ public class ProductRegisterVO {
     private int listPrice;
     private int price;
     private String category;
-    private String imageURL;
 
     @Override
     public String toString() {
         return String.format(
                 "ProductRegisterVO[name='%s', description='%s', listPrice=%d, price=%d]",
-                this.name, this.description, this.listPrice, this.price, this.category, this.imageURL
+                this.name, this.description, this.listPrice, this.price, this.category
         );
     }
 }

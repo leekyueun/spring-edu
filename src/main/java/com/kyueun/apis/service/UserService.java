@@ -25,7 +25,7 @@ public class UserService {
         this.saleRepository = saleRepository;
     }
 
-    public User find(int userId) throws Exception {
+    public User find(int userId) throws Exception{
         Optional<User> searchedUser = this.userRepository.findById(userId);
         return searchedUser.orElseThrow(() -> new Exception("해당 유저를 찾지 못하였습니다"));
     }
@@ -36,20 +36,20 @@ public class UserService {
 
     public void initializeUsers() {
         User user1 = User.builder()
-                .email("examplo1@sample.com")
+                .email("example1@sample.com")
                 .name("Mr. Example")
                 .phone("01000000000")
                 .build();
 
         User user2 = User.builder()
-                .email("examplo2@sample.com")
-                .name("Mr. Sample")
+                .email("example2@sample.com")
+                .name("Mrs. Sample")
                 .phone("01000001234")
                 .build();
 
         User user3 = User.builder()
-                .email("examplo3@sample.com")
-                .name("Mr. Sample Data")
+                .email("example3@sample.com")
+                .name("ms. Sample Data")
                 .phone("01012341234")
                 .build();
 
@@ -61,10 +61,11 @@ public class UserService {
 
     public int createUser(UserRegisterVO userRegisterVO) {
         User createUser = User.builder()
-                .name(userRegisterVO.getName())
-                .phone(userRegisterVO.getPhone())
                 .email(userRegisterVO.getEmail())
+                .phone(userRegisterVO.getPhone())
+                .name(userRegisterVO.getName())
                 .build();
+
         this.userRepository.save(createUser);
         this.userRepository.flush();
 
@@ -79,7 +80,7 @@ public class UserService {
         SaleGroupByUserId groupData = this.saleRepository.PurchaseAmountGroupByUserId(userId);
         UserTotalPaidPrice userTotalPaidPrice = new UserTotalPaidPrice(groupData);
 
-        if(userTotalPaidPrice.getTotalPaidPrice() < 100000) {
+        if (userTotalPaidPrice.getTotalPaidPrice() < 100000) {
             return UserGradeEnum.FirstGrade;
         }
         else if (userTotalPaidPrice.getTotalPaidPrice() < 1000000) {

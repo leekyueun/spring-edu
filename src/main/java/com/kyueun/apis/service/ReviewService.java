@@ -26,17 +26,19 @@ public class ReviewService {
                 .rate(5)
                 .review("너무 좋아요! 잘쓰고 있습니다")
                 .build();
+
         Review review2 = Review.builder()
                 .userId(2)
                 .rate(3)
-                .review("그냥 그래요")
+                .review("그냥 그렇습니다... 애매해요")
                 .build();
+
 
         this.reviewRepository.save(review1);
         this.reviewRepository.save(review2);
 
-        product1.getReviews().add(review1);
-        product1.getReviews().add(review2);
+        product1.getReview().add(review1);
+        product1.getReview().add(review2);
 
         this.reviewRepository.flush();
     }
