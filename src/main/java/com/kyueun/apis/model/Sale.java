@@ -1,6 +1,6 @@
 package com.kyueun.apis.model;
 
-import com.kyueun.apis.datamodels.SaleStatusEnum;
+import com.kyueun.apis.datamodels.enumModel.SaleStatusEnum;
 
 import lombok.Builder;
 import lombok.Getter;

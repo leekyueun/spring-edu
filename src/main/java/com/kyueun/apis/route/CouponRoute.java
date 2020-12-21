@@ -4,7 +4,7 @@ import com.kyueun.apis.model.Coupon;
 import com.kyueun.apis.model.IssuedCoupon;
 import com.kyueun.apis.service.CouponService;
 import com.kyueun.apis.service.IssuedCouponService;
-import com.kyueun.apis.vo.CouponRegisterVO;
+import com.kyueun.apis.datamodels.vo.CouponRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

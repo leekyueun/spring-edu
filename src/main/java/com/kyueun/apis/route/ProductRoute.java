@@ -2,7 +2,7 @@ package com.kyueun.apis.route;
 
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.service.ProductService;
-import com.kyueun.apis.vo.ProductRegisterVO;
+import com.kyueun.apis.datamodels.vo.ProductRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

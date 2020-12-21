@@ -2,7 +2,7 @@ package com.kyueun.apis.service;
 
 import com.kyueun.apis.model.Coupon;
 import com.kyueun.apis.repository.CouponRepository;
-import com.kyueun.apis.vo.CouponRegisterVO;
+import com.kyueun.apis.datamodels.vo.CouponRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 

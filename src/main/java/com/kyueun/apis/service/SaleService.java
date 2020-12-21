@@ -1,11 +1,11 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.SaleGroupByUserId;
-import com.kyueun.apis.datamodels.SaleStatusEnum;
+import com.kyueun.apis.datamodels.enumModel.SaleStatusEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.*;
 import com.kyueun.apis.repository.*;
-import com.kyueun.apis.vo.SalePurcheseVO;
+import com.kyueun.apis.datamodels.vo.SalePurcheseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 

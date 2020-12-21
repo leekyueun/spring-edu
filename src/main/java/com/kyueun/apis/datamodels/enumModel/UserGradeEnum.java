@@ -1,4 +1,4 @@
-package com.kyueun.apis.datamodels;
+package com.kyueun.apis.datamodels.enumModel;
 
 public enum UserGradeEnum {
     FirstGrade,

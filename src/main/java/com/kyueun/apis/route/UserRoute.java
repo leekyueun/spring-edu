@@ -1,13 +1,12 @@
 package com.kyueun.apis.route;
 
-import com.kyueun.apis.datamodels.SaleGroupByUserId;
-import com.kyueun.apis.datamodels.UserGradeEnum;
+import com.kyueun.apis.datamodels.enumModel.UserGradeEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.Sale;
 import com.kyueun.apis.model.User;
 import com.kyueun.apis.service.SaleService;
 import com.kyueun.apis.service.UserService;
-import com.kyueun.apis.vo.UserRegisterVO;
+import com.kyueun.apis.datamodels.vo.UserRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

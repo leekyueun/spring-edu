@@ -1,13 +1,12 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.SaleGroupByUserId;
-import com.kyueun.apis.datamodels.SaleStatusEnum;
-import com.kyueun.apis.datamodels.UserGradeEnum;
+import com.kyueun.apis.datamodels.enumModel.UserGradeEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.User;
 import com.kyueun.apis.repository.SaleRepository;
 import com.kyueun.apis.repository.UserRepository;
-import com.kyueun.apis.vo.UserRegisterVO;
+import com.kyueun.apis.datamodels.vo.UserRegisterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -83,7 +82,7 @@ public class UserService {
         return this.getUserGradeByTotalPaidPrice(userTotalPaidPrice.getTotalPaidPrice());
     }
 
-    private UserGradeEnum getUserGradeByTotalPaidPrice(int totalPrice) {
+    public UserGradeEnum getUserGradeByTotalPaidPrice(int totalPrice) {
         if (totalPrice < 100000) {
             return UserGradeEnum.FirstGrade;
         }

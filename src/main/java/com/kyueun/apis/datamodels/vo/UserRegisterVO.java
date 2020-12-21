@@ -1,4 +1,4 @@
-package com.kyueun.apis.vo;
+package com.kyueun.apis.datamodels.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
