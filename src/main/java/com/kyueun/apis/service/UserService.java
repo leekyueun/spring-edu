@@ -80,16 +80,20 @@ public class UserService {
         SaleGroupByUserId groupData = this.saleRepository.PurchaseAmountGroupByUserId(userId);
         UserTotalPaidPrice userTotalPaidPrice = new UserTotalPaidPrice(groupData);
 
-        if (userTotalPaidPrice.getTotalPaidPrice() < 100000) {
+        return this.getUserGradeByTotalPaidPrice(userTotalPaidPrice.getTotalPaidPrice());
+    }
+
+    public UserGradeEnum getUserGradeByTotalPaidPrice(int totalPrice) {
+        if (totalPrice < 100000) {
             return UserGradeEnum.FirstGrade;
         }
-        else if (userTotalPaidPrice.getTotalPaidPrice() < 1000000) {
+        else if (totalPrice < 1000000) {
             return UserGradeEnum.SecondGrade;
         }
-        else if (userTotalPaidPrice.getTotalPaidPrice() < 3000000) {
+        else if (totalPrice < 3000000) {
             return UserGradeEnum.ThirdGrade;
         }
-        else if (userTotalPaidPrice.getTotalPaidPrice() < 10000000) {
+        else if (totalPrice < 10000000) {
             return UserGradeEnum.FourthGrade;
         }
         else {
