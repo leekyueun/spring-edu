@@ -1,5 +1,6 @@
 package com.kyueun.apis.service;
 
+import com.kyueun.apis.datamodels.dto.IssuedCouponDTO;
 import com.kyueun.apis.model.Coupon;
 import com.kyueun.apis.model.IssuedCoupon;
 import com.kyueun.apis.repository.CouponRepository;
@@ -23,9 +24,9 @@ public class IssuedCouponService {
         this.couponRepository = couponRepository;
     }
 
-    public IssuedCoupon issueCouponById(int issueCouponId) throws Exception {
-        return this.issuedCouponRepository.findById(issueCouponId)
-                .orElseThrow(() -> new Exception("해당 발급된 쿠폰 ID가 없습니다"));
+    public IssuedCouponDTO issueCouponById(int issueCouponId) throws Exception {
+        return new IssuedCouponDTO(this.issuedCouponRepository.findById(issueCouponId)
+                .orElseThrow(() -> new Exception("해당 발급된 쿠폰 ID가 없습니다")));
     }
 
     public int issueCoupon(int couponId, int userId) throws Exception {

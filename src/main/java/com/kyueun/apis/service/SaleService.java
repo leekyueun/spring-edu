@@ -1,16 +1,18 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.SaleGroupByUserId;
+import com.kyueun.apis.datamodels.dto.SaleDTO;
 import com.kyueun.apis.datamodels.enumModel.SaleStatusEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.*;
 import com.kyueun.apis.repository.*;
-import com.kyueun.apis.datamodels.vo.SalePurcheseVO;
+import com.kyueun.apis.datamodels.vo.SalePurchaseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class SaleService {
@@ -33,22 +35,22 @@ public class SaleService {
         this.issuedCouponRepository = issuedCouponRepository;
     }
 
-    public Sale find(int saleId) throws Exception {
+    public SaleDTO saleById(int saleId) throws Exception {
         Optional<Sale> searchedSale = this.saleRepository.findById(saleId);
-        return searchedSale.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다"));
+        return new SaleDTO(searchedSale.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다")));
     }
 
     private int getDiscountAmount(int originAmount, int discountAmount, int discountPercentage) {
         if (discountAmount != 0) {
             return discountAmount;
         }
-        else if (discountPercentage != 0) {
+        else if(discountPercentage != 0) {
             return (int)Math.floor(originAmount * (discountPercentage / 100));
         }
         return 0;
     }
 
-    public int createSale(SalePurcheseVO salePurchaseVO) throws Exception{
+    public int createSale(SalePurchaseVO salePurchaseVO) throws Exception{
         Optional<Product> product = this.productRepository.findById(salePurchaseVO.getProductId());
         Optional<User> user = this.userRepository.findById(salePurchaseVO.getUserId());
 
@@ -64,18 +66,19 @@ public class SaleService {
 
         int issuedCouponId = salePurchaseVO.getIssuedCouponId();
         IssuedCoupon issuedCoupon = this.issuedCouponRepository.findById(issuedCouponId)
-                .orElseThrow(() -> new Exception("해당 발급된 쿠폰이 존재하지 않습니다."));
+                .orElseThrow(() -> new Exception("해당 발급된 쿠폰이 존재하지 않습니다"));
 
         Coupon coupon = this.couponRepository.findById(issuedCoupon.getCouponId())
-                .orElseThrow(() -> new Exception("해당 쿠폰이 존재하지 않습니다."));
+                .orElseThrow(() -> new Exception("해당 쿠폰이 존재하지 않습니다"));
 
         int discountAmount = this.getDiscountAmount(salePurchaseVO.getPaidPrice(),
-                coupon.getDiscountPrice(), coupon.getDiscountPercentage());
+                coupon.getDiscountPrice(),
+                coupon.getDiscountPercentage());
 
         Sale createdSale = Sale.builder()
                 .userId(salePurchaseVO.getUserId())
                 .productId(salePurchaseVO.getProductId())
-                .paidPrice(salePurchaseVO.getPaidPrice())
+                .paidPrice(salePurchaseVO.getPaidPrice() - discountAmount)
                 .listPrice(salePurchaseVO.getListPrice())
                 .amount(salePurchaseVO.getAmount()).build();
 
@@ -136,8 +139,10 @@ public class SaleService {
         this.saleRepository.flush();
     }
 
-    public List<Sale> getSalesByUserId(int userId) {
-        return this.saleRepository.findByUserId(userId);
+    public List<SaleDTO> getSalesByUserId(int userId) {
+        return this.saleRepository.findByUserId(userId).stream().
+                map(SaleDTO::new)
+                .collect(Collectors.toList());
     }
 
     public UserTotalPaidPrice getTotalPaidPriceByUserId(int userId) {

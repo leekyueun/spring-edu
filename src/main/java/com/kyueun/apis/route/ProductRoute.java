@@ -1,5 +1,6 @@
 package com.kyueun.apis.route;
 
+import com.kyueun.apis.datamodels.dto.ProductDTO;
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.service.ProductService;
 import com.kyueun.apis.datamodels.vo.ProductRegisterVO;
@@ -20,14 +21,14 @@ public class ProductRoute {
 
     @GetMapping("/{product_id}")
     @ResponseBody
-    public Product getProduct(@PathVariable(value = "product_id") String productId) throws Exception {
-        return this.productService.find(Integer.parseInt(productId));
+    public Product getProduct(@PathVariable(value="product_id") String productId) throws Exception {
+        return this.productService.productById(Integer.parseInt(productId));
     }
 
     @GetMapping
     @ResponseBody
-    public List<Product> getProducts() {
-        return this.productService.findAll();
+    public List<ProductDTO> getProducts() {
+        return this.productService.products();
     }
 
     @GetMapping("/initialize")
@@ -36,7 +37,7 @@ public class ProductRoute {
     }
 
     @DeleteMapping("/{product_id}")
-    public void deleteUser(@PathVariable(value = "user_id") String productId) {
+    public void deleteProduct(@PathVariable(value="product_id") String productId) throws Exception {
         this.productService.deleteProduct(Integer.parseInt(productId));
     }
 
@@ -47,7 +48,7 @@ public class ProductRoute {
 
     @GetMapping("/category/{category_name}")
     @ResponseBody
-    public List<Product> getProductsBycategory(@PathVariable(value = "category_name") String category_name) {
+    public List<ProductDTO> getProductsByCategory(@PathVariable(value="category_name") String category_name) {
         return this.productService.productsByCategory(category_name);
     }
 }

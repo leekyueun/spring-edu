@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SalePurcheseVO {
+public class SalePurchaseVO {
     int userId;
     int productId;
     int paidPrice;

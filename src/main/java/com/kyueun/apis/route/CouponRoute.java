@@ -1,7 +1,7 @@
 package com.kyueun.apis.route;
 
-import com.kyueun.apis.model.Coupon;
-import com.kyueun.apis.model.IssuedCoupon;
+import com.kyueun.apis.datamodels.dto.CouponDTO;
+import com.kyueun.apis.datamodels.dto.IssuedCouponDTO;
 import com.kyueun.apis.service.CouponService;
 import com.kyueun.apis.service.IssuedCouponService;
 import com.kyueun.apis.datamodels.vo.CouponRegisterVO;
@@ -20,27 +20,27 @@ public class CouponRoute {
         this.issuedCouponService = issuedCouponService;
     }
 
+
     @GetMapping("/{coupon_id}")
     @ResponseBody
-    public Coupon getCoupon(@PathVariable(value = "coupon_id") String couponId) throws Exception {
+    public CouponDTO getCoupon(@PathVariable(value="coupon_id") String couponId) throws Exception {
         return this.couponService.couponById(Integer.parseInt(couponId));
     }
 
     @PostMapping
-    public int createCoupon(CouponRegisterVO couponRegisterVO) throws Exception {
+    public int createCoupon(CouponRegisterVO couponRegisterVO) throws Exception{
         return this.couponService.createCoupon(couponRegisterVO);
     }
 
     @PostMapping("/{coupon_id}/issue")
-    public int issueCoupon(@PathVariable(value = "coupon_id") String couponId,
-                           @RequestParam(value = "user_id") String userId) throws Exception {
+    public int issueCoupon(@PathVariable(value="coupon_id") String couponId,
+                           @RequestParam(value="user_id") String userId) throws Exception {
         return this.issuedCouponService.issueCoupon(Integer.parseInt(couponId), Integer.parseInt(userId));
     }
 
     @GetMapping("/issued-coupon/{issued_coupon_id}")
     @ResponseBody
-    public IssuedCoupon getIssuedCoupon(
-            @PathVariable(value = "issued_coupon_id") String issuedCouponId) throws Exception {
+    public IssuedCouponDTO getIssuedCoupon(@PathVariable(value="issued_coupon_id") String issuedCouponId) throws Exception{
         return this.issuedCouponService.issueCouponById(Integer.parseInt(issuedCouponId));
     }
 }

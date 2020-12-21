@@ -1,8 +1,8 @@
 package com.kyueun.apis.route;
 
-import com.kyueun.apis.model.Sale;
+import com.kyueun.apis.datamodels.dto.SaleDTO;
 import com.kyueun.apis.service.SaleService;
-import com.kyueun.apis.datamodels.vo.SalePurcheseVO;
+import com.kyueun.apis.datamodels.vo.SalePurchaseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +18,8 @@ public class SaleRoute {
 
     @GetMapping("/{sale_id}")
     @ResponseBody
-    public Sale getSale(@PathVariable(value = "sale_id") String saleId) throws Exception {
-        return this.saleService.find(Integer.parseInt(saleId));
+    public SaleDTO getSale(@PathVariable(value="sale_id") String saleId) throws Exception{
+        return this.saleService.saleById(Integer.parseInt(saleId));
     }
 
     @GetMapping("/initialize")
@@ -28,13 +28,13 @@ public class SaleRoute {
     }
 
     @PostMapping("/purchase")
-    public void purchase(SalePurcheseVO salePurcheseVO) throws  Exception {
-        int saleId = this.saleService.createSale(salePurcheseVO);
+    public void purchase(SalePurchaseVO salePurchaseVO) throws Exception {
+        int saleId = this.saleService.createSale(salePurchaseVO);
         this.saleService.purchase(saleId);
     }
 
     @PostMapping("/{sale_id}/refund")
-    public void refund(@PathVariable(value = "sale_id") String saleId) throws Exception {
+    public void refund(@PathVariable(value="sale_id") String saleId) throws Exception{
         this.saleService.refund(Integer.parseInt(saleId));
     }
 }

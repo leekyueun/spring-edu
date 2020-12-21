@@ -1,9 +1,9 @@
 package com.kyueun.apis.route;
 
+import com.kyueun.apis.datamodels.dto.SaleDTO;
+import com.kyueun.apis.datamodels.dto.UserDTO;
 import com.kyueun.apis.datamodels.enumModel.UserGradeEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
-import com.kyueun.apis.model.Sale;
-import com.kyueun.apis.model.User;
 import com.kyueun.apis.service.SaleService;
 import com.kyueun.apis.service.UserService;
 import com.kyueun.apis.datamodels.vo.UserRegisterVO;
@@ -24,19 +24,19 @@ public class UserRoute {
         this.saleService = saleService;
     }
 
-    @GetMapping("")
+    @GetMapping
     @ResponseBody
-    public List<User> getUsers() {
-        return this.userService.findAll();
+    public List<UserDTO> getUsers() {
+        return this.userService.users();
     }
 
     @GetMapping("/{user_id}")
     @ResponseBody
-    public User getUser(@PathVariable(value = "user_id") String userId) throws Exception {
-        return this.userService.find(Integer.parseInt(userId));
+    public UserDTO getUser(@PathVariable(value="user_id") String userId) throws Exception{
+        return this.userService.userById(Integer.parseInt(userId));
     }
 
-    @PostMapping("")
+    @PostMapping
     public int createUser(UserRegisterVO user) {
         return this.userService.createUser(user);
     }
@@ -47,23 +47,23 @@ public class UserRoute {
     }
 
     @DeleteMapping("/{user_id}")
-    public void deleteUser(@PathVariable(value = "user_id") String userId) {
+    public void deleteUser(@PathVariable(value="user_id") String userId) {
         this.userService.deleteUser(Integer.parseInt(userId));
     }
 
-    @GetMapping("/user/{user_id}/purchase_list")
-    public List<Sale> getuserPurchaseList(@PathVariable(value = "user_id") String userId) {
+    @GetMapping("/{user_id}/purchase_list")
+    public List<SaleDTO> getUserPurchaseList(@PathVariable(value="user_id") String userId) {
         return this.saleService.getSalesByUserId(Integer.parseInt(userId));
     }
 
     @GetMapping("/{user_id}/purchase_amount")
-    public UserTotalPaidPrice getuserPurchaseAmount(@PathVariable(value = "user_id") String userId) {
+    public UserTotalPaidPrice getUserPurchaseAmount(@PathVariable(value="user_id") String userId) {
         return this.saleService.getTotalPaidPriceByUserId(Integer.parseInt(userId));
     }
 
     @GetMapping("/{user_id}/grade")
-    public UserGradeEnum getUserGrade(@PathVariable(value = "user_id") String userId) {
+    @ResponseBody
+    public UserGradeEnum getUserGrade(@PathVariable(value="user_id") String userId) {
         return this.userService.getUserGrade(Integer.parseInt(userId));
     }
-
 }

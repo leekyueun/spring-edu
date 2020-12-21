@@ -1,6 +1,7 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.SaleGroupByUserId;
+import com.kyueun.apis.datamodels.dto.UserDTO;
 import com.kyueun.apis.datamodels.enumModel.UserGradeEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
 import com.kyueun.apis.model.User;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserService {
@@ -24,13 +26,15 @@ public class UserService {
         this.saleRepository = saleRepository;
     }
 
-    public User find(int userId) throws Exception{
+    public UserDTO userById(int userId) throws Exception{
         Optional<User> searchedUser = this.userRepository.findById(userId);
-        return searchedUser.orElseThrow(() -> new Exception("해당 유저를 찾지 못하였습니다"));
+        return new UserDTO(searchedUser.orElseThrow(() -> new Exception("해당 유저를 찾지 못하였습니다")));
     }
 
-    public List<User> findAll() {
-        return this.userRepository.findAll();
+    public List<UserDTO> users() {
+        return this.userRepository.findAll().stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
     }
 
     public void initializeUsers() {
@@ -82,17 +86,17 @@ public class UserService {
         return this.getUserGradeByTotalPaidPrice(userTotalPaidPrice.getTotalPaidPrice());
     }
 
-    public UserGradeEnum getUserGradeByTotalPaidPrice(int totalPrice) {
-        if (totalPrice < 100000) {
+    private UserGradeEnum getUserGradeByTotalPaidPrice(int totalPaidPrice) {
+        if (totalPaidPrice < 100000) {
             return UserGradeEnum.FirstGrade;
         }
-        else if (totalPrice < 1000000) {
+        else if (totalPaidPrice < 1000000) {
             return UserGradeEnum.SecondGrade;
         }
-        else if (totalPrice < 3000000) {
+        else if (totalPaidPrice < 3000000) {
             return UserGradeEnum.ThirdGrade;
         }
-        else if (totalPrice < 10000000) {
+        else if (totalPaidPrice < 10000000) {
             return UserGradeEnum.FourthGrade;
         }
         else {

@@ -1,5 +1,6 @@
 package com.kyueun.apis.service;
 
+import com.kyueun.apis.datamodels.dto.ProductDTO;
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.repository.ProductRepository;
 import com.kyueun.apis.datamodels.vo.ProductRegisterVO;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProductService {
@@ -18,13 +20,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> findAll() {
-        return this.productRepository.findAll();
+    public List<ProductDTO> products() {
+        return this.productRepository.findAll().stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
 
-    public Product find(int productId) throws Exception {
+    public Product productById(int productId) throws Exception {
         Optional<Product> searchedProduct = this.productRepository.findById(productId);
-        return searchedProduct.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다."));
+        return searchedProduct.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다"));
     }
 
     public void initializeProducts() {
@@ -34,14 +38,16 @@ public class ProductService {
                 .listPrice(1200000)
                 .price(1000000)
                 .category("전자기기")
+                .imageURL("http://s3.aws-amazon.com/url-computer")
                 .build();
 
         Product product2 = Product.builder()
                 .name("갤럭시 s20")
-                .description("핸드폰")
+                .description("핸드폰입니다")
                 .listPrice(1240000)
                 .price(1110000)
                 .category("전자기기")
+                .imageURL("http://s3.aws-amazon.com/url-galuxy")
                 .build();
 
         Product product3 = Product.builder()
@@ -50,6 +56,7 @@ public class ProductService {
                 .listPrice(230000)
                 .price(210000)
                 .category("이어폰")
+                .imageURL("http://s3.aws-amazon.com/url-airpod")
                 .build();
 
         this.productRepository.save(product1);
@@ -59,7 +66,7 @@ public class ProductService {
     }
 
     public int createProduct(ProductRegisterVO productRegisterVO) {
-        Product createProduct = Product.builder()
+        Product createdProduct = Product.builder()
                 .name(productRegisterVO.getName())
                 .description(productRegisterVO.getDescription())
                 .listPrice(productRegisterVO.getListPrice())
@@ -68,17 +75,19 @@ public class ProductService {
                 .imageURL(productRegisterVO.getImageURL())
                 .build();
 
-        this.productRepository.save(createProduct);
+        this.productRepository.save(createdProduct);
         this.productRepository.flush();
 
-        return createProduct.getProductId();
+        return createdProduct.getProductId();
     }
 
     public void deleteProduct(int productId) {
         this.productRepository.deleteById(productId);
     }
 
-    public List<Product> productsByCategory(String category) {
-        return this.productRepository.findByCategory(category);
+    public List<ProductDTO> productsByCategory(String category) {
+        return this.productRepository.findByCategory(category).stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
 }
