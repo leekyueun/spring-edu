@@ -1,0 +1,24 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: pre build message to server
+      run: curl --location --request POST '122.128.169.32:8080/kyueun' --form 'message="Github Action 이 정상적으로 실행되었습니다"'
+    - name: Set up JDK 15
+      uses: actions/setup-java@v1
+      with:
+        java-version: 15
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: post build message to server
+      run: curl --location --request POST '122.128.169.32:8080/kyueun' --form 'message="Github Action 에서 빌드가 성공적으로 완료되었습니다"'
