@@ -18,7 +18,8 @@ public class InitializeRoute {
     private final UserService userService;
 
     @Autowired
-    public InitializeRoute(ProductService productService, ReviewService reviewService, SaleService saleService, UserService userService) {
+    public InitializeRoute(ProductService productService, ReviewService reviewService,
+                           SaleService saleService, UserService userService) {
         this.productService = productService;
         this.reviewService = reviewService;
         this.saleService = saleService;

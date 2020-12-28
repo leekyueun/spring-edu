@@ -1,6 +1,7 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.dto.CouponDTO;
+import com.kyueun.apis.datamodels.exception.ControllableException;
 import com.kyueun.apis.model.Coupon;
 import com.kyueun.apis.repository.CouponRepository;
 import com.kyueun.apis.datamodels.vo.CouponRegisterVO;
@@ -18,9 +19,9 @@ public class CouponService {
         this.couponRepository = couponRepository;
     }
 
-    public int createCoupon(CouponRegisterVO couponRegisterVO) throws Exception {
+    public int createCoupon(CouponRegisterVO couponRegisterVO) throws ControllableException {
         if (couponRegisterVO.getDiscountPercentage() != 0 && couponRegisterVO.getDiscountPrice() != 0) {
-            throw new Exception("할인 금액과 할인 비율이 동시에 존재할수 없습니다!");
+            throw new ControllableException("할인 금액과 할인 비율이 동시에 존재할수 없습니다!");
         }
 
         Coupon createdCoupon = Coupon.builder()
@@ -38,9 +39,9 @@ public class CouponService {
         return createdCoupon.getCouponId();
     }
 
-    public CouponDTO couponById(int couponId) throws Exception {
+    public CouponDTO couponById(int couponId) throws ControllableException {
         Optional<Coupon> coupon = this.couponRepository.findById(couponId);
 
-        return new CouponDTO(coupon.orElseThrow(() -> new Exception("해당 쿠폰을 확인할수 없습니다")));
+        return new CouponDTO(coupon.orElseThrow(() -> new ControllableException("해당 쿠폰을 확인할수 없습니다")));
     }
 }

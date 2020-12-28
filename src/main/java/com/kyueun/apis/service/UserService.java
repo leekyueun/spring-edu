@@ -4,6 +4,7 @@ import com.kyueun.apis.datamodels.SaleGroupByUserId;
 import com.kyueun.apis.datamodels.dto.UserDTO;
 import com.kyueun.apis.datamodels.enumModel.UserGradeEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
+import com.kyueun.apis.datamodels.exception.ControllableException;
 import com.kyueun.apis.model.User;
 import com.kyueun.apis.repository.SaleRepository;
 import com.kyueun.apis.repository.UserRepository;
@@ -26,9 +27,9 @@ public class UserService {
         this.saleRepository = saleRepository;
     }
 
-    public UserDTO userById(int userId) throws Exception{
+    public UserDTO userById(int userId) throws ControllableException{
         Optional<User> searchedUser = this.userRepository.findById(userId);
-        return new UserDTO(searchedUser.orElseThrow(() -> new Exception("해당 유저를 찾지 못하였습니다")));
+        return new UserDTO(searchedUser.orElseThrow(() -> new ControllableException("해당 유저를 찾지 못하였습니다")));
     }
 
     public List<UserDTO> users() {

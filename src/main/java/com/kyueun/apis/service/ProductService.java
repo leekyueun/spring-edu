@@ -1,6 +1,7 @@
 package com.kyueun.apis.service;
 
 import com.kyueun.apis.datamodels.dto.ProductDTO;
+import com.kyueun.apis.datamodels.exception.ControllableException;
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.repository.ProductRepository;
 import com.kyueun.apis.datamodels.vo.ProductRegisterVO;
@@ -26,9 +27,9 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public Product productById(int productId) throws Exception {
+    public Product productById(int productId) throws ControllableException {
         Optional<Product> searchedProduct = this.productRepository.findById(productId);
-        return searchedProduct.orElseThrow(() -> new Exception("해당 상품을 찾지 못하였습니다"));
+        return searchedProduct.orElseThrow(() -> new ControllableException("해당 상품을 찾지 못하였습니다"));
     }
 
     public void initializeProducts() {

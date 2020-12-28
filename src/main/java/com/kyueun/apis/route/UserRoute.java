@@ -4,6 +4,7 @@ import com.kyueun.apis.datamodels.dto.SaleDTO;
 import com.kyueun.apis.datamodels.dto.UserDTO;
 import com.kyueun.apis.datamodels.enumModel.UserGradeEnum;
 import com.kyueun.apis.datamodels.UserTotalPaidPrice;
+import com.kyueun.apis.datamodels.exception.ControllableException;
 import com.kyueun.apis.service.SaleService;
 import com.kyueun.apis.service.UserService;
 import com.kyueun.apis.datamodels.vo.UserRegisterVO;
@@ -32,7 +33,7 @@ public class UserRoute {
 
     @GetMapping("/{user_id}")
     @ResponseBody
-    public UserDTO getUser(@PathVariable(value="user_id") String userId) throws Exception{
+    public UserDTO getUser(@PathVariable(value="user_id") String userId) throws ControllableException {
         return this.userService.userById(Integer.parseInt(userId));
     }
 

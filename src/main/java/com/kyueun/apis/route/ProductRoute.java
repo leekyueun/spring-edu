@@ -1,6 +1,7 @@
 package com.kyueun.apis.route;
 
 import com.kyueun.apis.datamodels.dto.ProductDTO;
+import com.kyueun.apis.datamodels.exception.ControllableException;
 import com.kyueun.apis.model.Product;
 import com.kyueun.apis.service.ProductService;
 import com.kyueun.apis.datamodels.vo.ProductRegisterVO;
@@ -21,7 +22,7 @@ public class ProductRoute {
 
     @GetMapping("/{product_id}")
     @ResponseBody
-    public Product getProduct(@PathVariable(value="product_id") String productId) throws Exception {
+    public Product getProduct(@PathVariable(value="product_id") String productId) throws ControllableException {
         return this.productService.productById(Integer.parseInt(productId));
     }
 
@@ -37,7 +38,7 @@ public class ProductRoute {
     }
 
     @DeleteMapping("/{product_id}")
-    public void deleteProduct(@PathVariable(value="product_id") String productId) throws Exception {
+    public void deleteProduct(@PathVariable(value="product_id") String productId) throws ControllableException {
         this.productService.deleteProduct(Integer.parseInt(productId));
     }
 
